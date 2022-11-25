@@ -1,0 +1,1 @@
+loan.df <- read.csv('Loan_Data.csv', stringsAsFactors = TRUE)
