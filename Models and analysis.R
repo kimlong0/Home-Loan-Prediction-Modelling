@@ -30,7 +30,7 @@ filtered.df <- filtered.df %>% relocate(Total_Income, .before = LoanAmount)
 
 
 # Plots
-ggplot(data = filtered.df) + geom_point(aes(x = ApplicantIncome, y = LoanAmount, color = Loan_Status))
+ggplot(data = filtered.df) + geom_point(aes(x = Total_Income, y = LoanAmount, color = Loan_Status))
 
 ggplot(data = filtered.df) + geom_point(aes(x = Loan_Amount_Term, y = LoanAmount))
 
@@ -106,3 +106,33 @@ ggplot(data = k.results.df) +
   labs(x = "K-Values", y = " Confusion Matrix Accuracy", title = "Determining the best K-Value")
 
 # Appears that K-values 9 and 15 are the most optimal with the highest confusion Matrix Accuracy of 0.6751
+
+
+
+# Logistic Regression
+str(filtered.df)
+filtered.df$Credit_History <- factor(filtered.df$Credit_History)
+
+filtered.df$Loan_Status <- ifelse(filtered.df$Loan_Status == 'Y', 1, 0)
+
+# Same as Classification Tree
+set.seed(2022)
+train.index <- sample(1:nrow(filtered.df), nrow(filtered.df) * 0.6)
+
+# Making Data Partition
+train.df <- filtered.df[train.index, ]
+valid.df <- filtered.df[-train.index, ]
+
+# Logistic regression
+logit.reg <- glm(Loan_Status ~ ., data = train.df, family = 'binomial')
+summary(logit.reg)
+
+# prediction
+logit.reg.pred <- predict(logit.reg, newdata = valid.df, type = 'response')
+head(logit.reg.pred)
+
+pred <- ifelse(logit.reg.pred > 0.5, 1, 0)
+head(pred)
+
+# Confusion Matrix Accuracy
+confusionMatrix(factor(pred), factor(valid.df$Loan_Status), positive = '1')
