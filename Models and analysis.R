@@ -110,29 +110,32 @@ ggplot(data = k.results.df) +
 
 
 # Logistic Regression
-str(filtered.df)
+
+#pre process data make ure it makes sense I am not sure if we need to make additional dummy variables
 filtered.df$Credit_History <- factor(filtered.df$Credit_History)
 
-filtered.df$Loan_Status <- ifelse(filtered.df$Loan_Status == 'Y', 1, 0)
+filtered.df$Loan_Status <- ifelse(filtered.df$Loan_Status == "Y", 1, 0)
+#### partition the data
+str(filtered.df)
 
-# Same as Classification Tree
+#patition the data 60 percent as training data .6
 set.seed(2022)
-train.index <- sample(1:nrow(filtered.df), nrow(filtered.df) * 0.6)
+train.index = sample(1:nrow(filtered.df), 0.6 * nrow(filtered.df) )
 
-# Making Data Partition
-train.df <- filtered.df[train.index, ]
-valid.df <- filtered.df[-train.index, ]
+train.df = filtered.df[train.index, ]
+valid.df = filtered.df[-train.index, ]
 
-# Logistic regression
-logit.reg <- glm(Loan_Status ~ ., data = train.df, family = 'binomial')
+#logistic regression
+logit.reg <- glm(Loan_Status ~ . , data = train.df, family = "binomial")
 summary(logit.reg)
 
-# prediction
-logit.reg.pred <- predict(logit.reg, newdata = valid.df, type = 'response')
+logit.reg.pred <- predict(logit.reg, valid.df,  type = "response")
 head(logit.reg.pred)
 
 pred <- ifelse(logit.reg.pred > 0.5, 1, 0)
 head(pred)
 
-# Confusion Matrix Accuracy
-confusionMatrix(factor(pred), factor(valid.df$Loan_Status), positive = '1')
+str(filtered.df)
+
+confusionMatrix(factor(pred), factor(valid.df$Loan_Status), positive = "1")
+
