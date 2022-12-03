@@ -91,13 +91,13 @@ valid.norm.df[, -4] <- predict(norm.values, valid.df[, -4])
 # install.packages('FNN')
 library(FNN)
 
-knn.pred <- knn(train.norm.df[, -4], valid.norm.df[, -4], cl = train.norm.df[, 4], k = 20)
+knn.pred <- knn(train.norm.df[, -4], valid.norm.df[, -4], cl = train.norm.df[, 4], k = 19)
 
 confusionMatrix(knn.pred, valid.norm.df[, 4])
 
 # K values accuracy from 5 to 15.
-k.values <- c(5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-confusion.accuracy <- c(0.6294, 0.6091, 0.665, 0.6497, 0.6751, 0.6447, 0.6701, 0.665, 0.665, 0.6599, 0.6751)
+k.values <- c(5, 7, 9, 11, 13, 15, 17, 19)
+confusion.accuracy <- c(0.6294, 0.665, 0.6751, 0.6701, 0.665, 0.6751, 0.6904, 0.7005)
 k.results.df <- data.frame(k.values, confusion.accuracy)
 
 
@@ -105,9 +105,10 @@ ggplot(data = k.results.df) +
   geom_bar(aes(x = reorder(factor(k.values), -confusion.accuracy), y = confusion.accuracy), stat = 'identity', fill='steelblue') + 
   labs(x = "K-Values", y = " Confusion Matrix Accuracy", title = "Determining the best K-Value")
 
-# Appears that K-values 9 and 15 are the most optimal with the highest confusion Matrix Accuracy of 0.6751
+# Appears that K-value 19 is the most optimal with the highest confusion Matrix Accuracy of 0.7005
 
-
+number_of_eligibile <- nrow(filtered.df[filtered.df$Loan_Status == "Y", ])
+dataset_eligible_ratio <- number_of_eligibile / nrow(filtered.df)
 
 # Logistic Regression
 
