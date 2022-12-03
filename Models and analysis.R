@@ -27,15 +27,23 @@ filtered.df$Total_Income <- total.income
 # Move TotalIncome column to the correct position within the data frame
 filtered.df <- filtered.df %>% relocate(Total_Income, .before = LoanAmount)
 
+median_income_credit <- filtered.df %>% group_by(Credit_History) %>% summarise(avg_total_income = median(Total_Income))
 
 
 # Plots
 ggplot(data = filtered.df) + geom_point(aes(x = Total_Income, y = LoanAmount, color = Loan_Status))
 
-ggplot(data = filtered.df) + geom_point(aes(x = Loan_Amount_Term, y = LoanAmount))
+ggplot(data = filtered.df) + 
+  geom_bar(aes(x = Loan_Amount_Term), fill='steelblue') + 
+  labs(x = "Loan Term (Months)", y = "Number of Loans", title = "Number of Loans vs Loan Terms")
 
 ggplot(data = filtered.df) + geom_bar(aes(x = Property_Area))
 
+ggplot(data = filtered.df) + geom_histogram(aes(x = Total_Income), fill='steelblue')
+
+ggplot(data = median_income_credit) + 
+  geom_bar(aes(x = Credit_History, y = avg_total_income), stat = 'identity', fill='steelblue') + 
+  labs(x = "Credit History Meets Loan Guidelines", y = "Median Total Applicant Income", title = "Median Applicant Income of Credit History groups")
 
 
 
